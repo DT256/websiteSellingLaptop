@@ -55,4 +55,15 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             @Param("category") String category,
             Pageable pageable);
 
+    @Query("SELECT p.name, COUNT(p) FROM ProductEntity p GROUP BY p.name")
+    Page<Object[]> countProductsGroupedByName(Pageable pageable);
+
+    // Truy vấn phân trang cho các sản phẩm nhóm theo tên danh mục
+    @Query("SELECT p.category.name, COUNT(p) FROM ProductEntity p GROUP BY p.category.name")
+    Page<Object[]> countProductsGroupedByCategoryName(Pageable pageable);
+
+    // Truy vấn phân trang cho các sản phẩm nhóm theo tên nhà sản xuất
+    @Query("SELECT p.manufacturer.name, COUNT(p) FROM ProductEntity p GROUP BY p.manufacturer.name")
+    Page<Object[]> countProductsGroupedByManufacturerName(Pageable pageable);
+
 }

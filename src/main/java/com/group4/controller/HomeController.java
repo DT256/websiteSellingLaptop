@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/home")
     public String index(){
-        return "index";
+        return "home";
+    }
+
+    @GetMapping("/inventory")
+    public String inventory(){
+        return "inventory";
     }
 }

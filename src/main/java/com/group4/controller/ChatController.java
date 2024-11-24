@@ -2,7 +2,11 @@ package com.group4.controller;
 
 
 import com.group4.entity.ChatEntity;
+import com.group4.entity.UserEntity;
+import com.group4.model.UserModel;
 import com.group4.repository.ChatRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +30,12 @@ public class ChatController {
     @Autowired
     private ChatRepository chatRepository;
 
-    @GetMapping("/chat")
-    public String showChat()
-    {
-        return "chat";
-    }
 
     @GetMapping("/getCustomerList")
-    public ResponseEntity<List<Integer>> getCustomerList() {
+    public ResponseEntity<List<UserEntity>> getCustomerList() {
         try {
             // Truy vấn các senderId đã nhắn tin cho receiverId được truyền vào
-            List<Integer> customerList = chatRepository.findDistinctSenderIdsByReceiverId();
+            List<UserEntity> customerList = chatRepository.findDistinctSendersByReceiverId();
             return ResponseEntity.ok(customerList);
         } catch (Exception e) {
             e.printStackTrace();

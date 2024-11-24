@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trang web của bạn</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" type="image/x-icon" />
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font-Awesome CSS -->
+    <link th:href="@{/assets/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- helper class css -->
+    <link th:href="@{/assets/css/helper.min.css}" rel="stylesheet">
+    <!-- Plugins CSS -->
+    <link th:href="@{/assets/css/plugins.css}" rel="stylesheet">
+    <!-- Main Style CSS -->
+    <link th:href="@{/assets/css/style.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/skin-default.css}" rel="stylesheet" id="galio-skin">
+
+    <!-- scripts.html -->
+    <script th:src="@{/assets/js/vendor/modernizr-3.6.0.min.js}"></script>
+    <script th:src="@{/assets/js/vendor/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/assets/js/vendor/popper.min.js}"></script>
+    <script th:src="@{/assets/js/vendor/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/plugins.js}"></script>
+    <script th:src="@{/assets/js/ajax-mail.js}"></script>
+    <script th:src="@{/assets/js/main.js}"></script>
+    <script th:src="@{/assets/js/switcher.js}"></script>
+</head>
+<style>
+    /* Body Styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container */
+    .container {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading Styling */
+    h1 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #d8373e;
+    }
+
+    /* Button Group */
+    .btn-group .btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-group .btn:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-outline-danger {
+        border-color: #d8373e;
+        color: #d8373e;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #d8373e;
+        color: #fff;
+    }
+
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-outline-info {
+        border-color: #17a2b8;
+        color: #17a2b8;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+    /* Table Styling */
+    .table {
+        margin-top: 20px;
+    }
+
+    .table thead {
+        background-color: #d8373e;
+        color: #fff;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #ffecec; /* Nhẹ nhàng hơn khi hover */
+    }
+
+    /* Pagination Controls */
+    .btn-secondary {
+        font-size: 14px;
+        border-radius: 25px;
+        padding: 8px 16px;
+        margin: 0 5px;
+    }
+
+    .btn-secondary:hover {
+        background-color: #d8373e;
+        border-color: #d8373e;
+        color: #fff;
+    }
+
+    .d-flex .btn[disabled] {
+        background-color: #e9ecef;
+        border-color: #ddd;
+        cursor: not-allowed;
+    }
+
+</style>
+<body>
+
+<!-- Include Header -->
+<!--<div th:replace="~{../fragments/header :: header}"></div>-->
+<div class="container">
+    <h1 class="text-center mb-4">KHO HÀNG</h1>
+
+    <!-- Button Group to switch between different stats -->
+    <div class="btn-group d-flex justify-content-center mb-4" role="group">
+        <button id="statsByName" class="btn btn-primary">Kiểm tra theo tên</button>
+        <button id="statsByCategory" class="btn btn-success">Kiểm tra theo loại</button>
+        <button id="statsByManufacturer" class="btn btn-info">Kiểm tra theo hãng</button>
+    </div>
+
+    <!-- Table to display results -->
+    <div id="statsResult" class="results table-responsive">
+        <!-- Table will be populated here -->
+    </div>
+</div>
+
+<script>
+    // Function to fetch statistics by Product Name
+    let currentPage = 0; // Trang hiện tại
+    let pageSize = 10; // Số lượng sản phẩm mỗi trang
+
+    // Function to fetch statistics with pagination
+    async function fetchStats(url, type) {
+        try {
+            const response = await fetch(`${url}?page=${currentPage}&size=${pageSize}`);
+            const data = await response.json();
+            displayResults(data, type);
+        } catch (error) {
+            console.error(`Error fetching stats from ${url}:`, error);
+        }
+    }
+
+    // Function to fetch statistics by Product Name
+    function getStatsByName() {
+        fetchStats('/products/stats-by-name', 'Product');
+    }
+
+    // Function to fetch statistics by Category Name
+    function getStatsByCategory() {
+        fetchStats('/products/stats-by-category', 'Category');
+    }
+
+    // Function to fetch statistics by Manufacturer Name
+    function getStatsByManufacturer() {
+        fetchStats('/products/stats-by-manufacturer', 'Manufacturer');
+    }
+
+    // Function to display results with pagination
+    function displayResults(data, type) {
+        const resultDiv = document.getElementById('statsResult');
+        resultDiv.innerHTML = '';
+
+        let table = `<table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>${type}</th>
+                            <th>Số lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        data.forEach(item => {
+            table += `<tr>
+                      <td>${item[`${type.toLowerCase()}Name`]}</td>
+                      <td>${item.count}</td>
+                  </tr>`;
+        });
+
+        table += `</tbody></table>`;
+        resultDiv.innerHTML = table;
+
+        // Add pagination controls
+        const pagination = `
+        <div class="d-flex justify-content-center mt-3">
+            <button class="btn btn-secondary mr-2" ${currentPage === 0 ? 'disabled' : ''} onclick="prevPage()">Previous</button>
+            <button class="btn btn-secondary" onclick="nextPage()">Next</button>
+        </div>`;
+        resultDiv.innerHTML += pagination;
+    }
+
+    function prevPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            reloadCurrentStats();
+        }
+    }
+
+    function nextPage() {
+        currentPage++;
+        reloadCurrentStats();
+    }
+
+    function reloadCurrentStats() {
+        // Reload stats based on the active button
+        const activeButton = document.querySelector('.btn-group .btn-primary, .btn-group .btn-success, .btn-group .btn-info');
+        if (activeButton.id === 'statsByName') getStatsByName();
+        if (activeButton.id === 'statsByCategory') getStatsByCategory();
+        if (activeButton.id === 'statsByManufacturer') getStatsByManufacturer();
+    }
+
+    // Event listeners
+    document.getElementById('statsByName').addEventListener('click', () => {
+        currentPage = 0;
+        getStatsByName();
+    });
+    document.getElementById('statsByCategory').addEventListener('click', () => {
+        currentPage = 0;
+        getStatsByCategory();
+    });
+    document.getElementById('statsByManufacturer').addEventListener('click', () => {
+        currentPage = 0;
+        getStatsByManufacturer();
+    });
+</script>
+
+</div>
+<!-- Content chính sẽ được thay thế ở đây -->
+<div th:fragment="content">
+</div>
+
+
+</body>
+</html>
