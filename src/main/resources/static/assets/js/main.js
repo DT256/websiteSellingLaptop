@@ -628,6 +628,7 @@
 
 
 let USERID = null;
+
 let RECEIVERID = null;
 let isAdmin = false;
 let stompClient = null;

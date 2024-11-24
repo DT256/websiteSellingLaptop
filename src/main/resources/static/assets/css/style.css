@@ -7555,6 +7555,7 @@ body.image-bg.layout-boxed {
 body.image-bg .wrapper {
     background-color: #fff;
 }
+
 #chat-popup {
     display: none; /* Mặc định ẩn */
     position: fixed;

@@ -55,6 +55,7 @@ public class ProductService {
                 })
                 .collect(Collectors.toList());
     }
+
     public List<Map<String, Object>> countProductsByName(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Object[]> results = productRepository.countProductsGroupedByName(pageable);
