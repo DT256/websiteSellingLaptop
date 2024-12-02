@@ -32,7 +32,7 @@ public class AuthController {
     @GetMapping("/logout")
     public String logoutPage(HttpSession session) {
         session.invalidate();
-        return "redirect:/?logout";
+        return "redirect:/home";
     }
 
     @RequestMapping(value = "register")

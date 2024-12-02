@@ -21,6 +21,11 @@
                         <div class="col-lg-6">
                             <div class="login-reg-form-wrap  pr-lg-50">
                                 <h2>Đăng nhập</h2>
+
+                                <div th:if="${error}" class="alert alert-danger">
+                                    <p th:text="${error}"></p>
+                                </div>
+
                                 <form action="#" th:action="@{/login}" method="post" id="myForm">
                                     <div class="single-input-item">
                                         <!-- Email field with pattern for stricter validation -->

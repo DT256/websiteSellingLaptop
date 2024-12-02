@@ -21,8 +21,8 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
         boolean isValidCredentials = userService.validateCredentials(username, password);
-        UserEntity user = userService.findByEmail(username).get();
         if (isValidCredentials) {
+            UserEntity user = userService.findByEmail(username).get();
             session.setAttribute("username", username);
             session.setAttribute("fullName", user.getName());
             session.setAttribute("roleName", user.getRoleName());

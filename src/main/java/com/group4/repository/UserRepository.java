@@ -41,4 +41,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     )
     Long findIdByEmail(@Param("email") String email);
 
+    boolean existsByEmail(String email);
+    boolean existsByEmailAndActive(String email, Boolean active);
+
 }

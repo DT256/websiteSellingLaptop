@@ -78,7 +78,13 @@ public class OtpController {
     }
 
     @RequestMapping(value = "send-otp-recover", method = RequestMethod.POST)
-    public String getMail(@RequestParam("emailaddress") String email, HttpSession session) {
+    public String getMail(@RequestParam("emailaddress") String email, HttpSession session, Model model) {
+
+        if(!userRepository.existsByEmail(email)) {
+            model.addAttribute("mess", "Email không tồn tại trong hệ thống!");
+            return "auth/recoverPage";
+        }
+
         session.setAttribute("emailToReset", email);
 
         String otpCode = constants.otpCode();
@@ -120,8 +126,20 @@ public class OtpController {
     }
 
     @RequestMapping(value = "send-otp-active", method = RequestMethod.POST)
-    public String getConfirm(@RequestParam("emailaddress") String email, HttpSession session) {
+    public String getConfirm(@RequestParam("emailaddress") String email, HttpSession session, Model model) {
+
+        if(!userRepository.existsByEmail(email)) {
+            model.addAttribute("mess", "Email không tồn tại trong hệ thống!");
+            return "auth/confirm";
+        }
+
+        if(userRepository.existsByEmailAndActive(email, true)) {
+            model.addAttribute("mess", "Email đã được xác minh! Hãy quay lại trang đăng nhập!");
+            return "auth/confirm";
+        }
+
         session.setAttribute("emailToReset", email);
+
 
         String otpCode = constants.otpCode();
 
