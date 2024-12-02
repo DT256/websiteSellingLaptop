@@ -32,22 +32,21 @@ public class CustomerReviewController {
                                @RequestParam String reviewContent,
                                HttpSession session) {
         UserEntity user = (UserEntity) session.getAttribute("user");
-        // Check if the product exists
 
+        // Kiểm tra và tạo đối tượng ProductEntity
         ProductEntity product = new ProductEntity();
         product.setProductID(productId);
 
-        // Tạo đối tượng RateEntity và gán giá trị
+        // Tạo đánh giá
         RateEntity review = new RateEntity();
         review.setUser(user);
         review.setProduct(product);
         review.setRate(rating);
         review.setContent(reviewContent);
 
-        // Lưu đánh giá vào cơ sở dữ liệu
+        // Lưu vào cơ sở dữ liệu
         customerReviewService.saveReview(review);
 
-        return "redirect:/history"; // Chuyển hướng về trang chi tiết sản phẩm
+        return "redirect:/history"; // Chuyển hướng về lịch sử
     }
-
 }
