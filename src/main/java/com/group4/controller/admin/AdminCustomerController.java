@@ -48,9 +48,9 @@ public class AdminCustomerController {
     @GetMapping("/{id}")
     public String getCustomerDetails(@PathVariable Long id, Model model) {
 
-        // Lấy thông tin khách hàng
-        CustomerEntity customer = customerService.getCustomerById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
+            // Lấy thông tin khách hàng
+            CustomerEntity customer = customerService.getCustomerById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
         model.addAttribute("customer", customer);
 
         // Lấy danh sách lịch sử đơn hàng

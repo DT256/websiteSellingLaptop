@@ -48,4 +48,5 @@ public class CustomerServiceImpl implements ICustomerService {
         user.setActive(status);
         userRepository.save(user); // Lưu thay đổi
     }
+
 }

@@ -57,12 +57,20 @@
             </thead>
             <tbody>
             <!-- Sử dụng Thymeleaf để duyệt danh sách khách hàng -->
-            <tr th:each="customer, iterStat : ${customers}">
+            <tr th:each="customer, iterStat : ${customers}" th:if="${customer.roleName != 'Admin'}">
                 <td th:text="${iterStat.count}">1</td>
                 <td th:text="${customer.name}">Nguyễn Văn A</td>
                 <td th:text="${customer.email}">example@gmail.com</td>
-                <td th:text="${customer.phone}">0123456789</td>
-                <td th:text="${customer.address.other} + ' ' + ${customer.address.commune} + ', ' +${customer.address.district} + ', ' +${customer.address.province} + ', ' +${customer.address.country}"></td>
+                <td th:text="${#strings.isEmpty(customer.phone) ? 'Chưa có' : customer.phone}">0123456789</td>
+                <td th:if="${customer.address == null}">Chưa có</td>
+                <td th:if="${customer.address != null}" th:text="${customer.address.other} + ' ' + ${customer.address.commune} + ', ' +${customer.address.district} + ', ' +${customer.address.province} + ', ' +${customer.address.country}"></td>
+<!--                <td th:text="-->
+<!--                    (${#strings.isEmpty(customer.address.other) ? 'N/A' : customer.address.other}) + ' ' +-->
+<!--                    (${#strings.isEmpty(customer.address.commune) ? 'N/A' : customer.address.commune}) + ', ' +-->
+<!--                    (${#strings.isEmpty(customer.address.district) ? 'N/A' : customer.address.district}) + ', ' +-->
+<!--                    (${#strings.isEmpty(customer.address.province) ? 'N/A' : customer.address.province}) + ', ' +-->
+<!--                    (${#strings.isEmpty(customer.address.country) ? 'N/A' : customer.address.country})-->
+<!--                "></td>-->
 
                 <td style="text-align: center; vertical-align: middle;">
                     <a th:href="@{/admin/customers/{id}(id=${customer.userID})}" class="btn btn-danger custom-hover">Chi tiết</a>

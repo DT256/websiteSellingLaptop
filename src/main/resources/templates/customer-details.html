@@ -90,12 +90,12 @@
                 <p><strong>Mã khách hàng:</strong> <span th:text="${customer.userID}">12345</span></p>
                 <p><strong>Tên:</strong> <span th:text="${customer.name}">Nguyễn Văn A</span></p>
                 <p><strong>Email:</strong> <span th:text="${customer.email}">example@gmail.com</span></p>
-                <p><strong>Giới tính:</strong> <span th:text="${customer.gender}">Nam</span></p>
-                <p><strong>Số điện thoại:</strong> <span th:text="${customer.phone}">0123456789</span></p>
+                <p><strong>Giới tính:</strong> <span th:text="${#strings.isEmpty(customer.gender) ? 'Chưa có' : customer.gender}">Nam</span></p>
+                <p><strong>Số điện thoại:</strong> <span th:text="${#strings.isEmpty(customer.phone) ? 'Chưa có' : customer.phone}">0123456789</span></p>
                 <p><strong>Địa chỉ:</strong>
-                    <span th:text="${customer.address.other} + ' ' + ${customer.address.commune} + ', ' + ${customer.address.district} + ', ' + ${customer.address.province} + ', ' + ${customer.address.country}">
-                    Địa chỉ mẫu
-        </span>
+                    <span th:if="${customer.address == null}">Chưa có</span>
+                    <span th:if="${customer.address != null}" th:text="${customer.address.other} + ' ' + ${customer.address.commune} + ', ' + ${customer.address.district} + ', ' + ${customer.address.province} + ', ' + ${customer.address.country}">
+                    Địa chỉ mẫu</span>
                 </p>
                 <p><strong>Trạng thái:</strong>
                     <span th:text="${customer.active ? 'Đang hoạt động' : 'Bị khóa'}"></span>

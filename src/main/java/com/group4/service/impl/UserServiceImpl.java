@@ -55,5 +55,5 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + userId));
         user.setActive(status);
         userRepository.save(user);
-    }   
+    }
 }
