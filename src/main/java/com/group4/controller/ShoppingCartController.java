@@ -65,7 +65,7 @@ public class ShoppingCartController {
 //    }
 
     @GetMapping("/remove/{productId}")
-    public String removeProductFromCart(@PathVariable Long productId, HttpSession session) {
+    public String removeProductFromCart(@PathVariable Long productId, HttpSession session,RedirectAttributes redirectAttributes) {
         // Lấy thông tin khách hàng từ session
         CustomerEntity currentUser = (CustomerEntity) session.getAttribute("user");
         if (currentUser == null) {
@@ -74,6 +74,7 @@ public class ShoppingCartController {
 
         // Xóa sản phẩm khỏi giỏ hàng
         shoppingCartService.removeProductFromCart(currentUser.getUserID(), productId);
+        redirectAttributes.addFlashAttribute("successMessage", "Sản phẩm đã được xóa khỏi giỏ hàng!");
         return "redirect:/cart";
     }
 

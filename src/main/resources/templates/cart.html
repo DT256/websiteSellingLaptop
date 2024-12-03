@@ -45,6 +45,7 @@
     </style>
 </head>
 <body>
+<div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
 <!-- cart main wrapper start -->
 <div class="cart-main-wrapper">
     <div class="container">
@@ -217,6 +218,13 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const cartRows = document.querySelectorAll("tbody tr");
+        const alertMessage = document.getElementById("alert-message");
+        if (alertMessage) {
+            setTimeout(() => {
+                alertMessage.style.opacity = "0"; // Làm mờ dần
+                setTimeout(() => alertMessage.remove(), 500); // Xóa hoàn toàn sau 0.5 giây
+            }, 4000); // Sau 4 giây
+        }
 
         // Hàm định dạng tiền tệ với dấu phân cách
         function formatCurrency(value) {
@@ -315,5 +323,6 @@
 
 
 </script>
+
 </div>
 </html>
