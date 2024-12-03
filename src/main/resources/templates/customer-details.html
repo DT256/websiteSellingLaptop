@@ -71,7 +71,7 @@
         <!-- Nút quay lại và tiêu đề -->
         <div class="d-flex align-items-center justify-content-between mb-4">
             <!-- Nút quay lại -->
-            <a th:href="@{/admin/orders}" class="btn btn-secondary"
+            <a th:href="@{/admin/customers}" class="btn btn-secondary"
                style="display: inline-block; background-color: #444444; color: white; padding: 10px; text-align: center; width: 40px; height: 40px; border-radius: 0; text-decoration: none; cursor: pointer;"
                onmouseover="this.style.backgroundColor='#d8373e';"
                onmouseout="this.style.backgroundColor='#444444';">
@@ -106,15 +106,13 @@
         <div class="mt-3">
             <a th:href="@{/admin/customers/{id}/lock(id=${customer.userID})}"
                th:if="${customer.active}" class="btn btn-danger custom-hover"
-               onclick="return confirm('Bạn có chắc chắn muốn khóa tài khoản này?');">
-                Khóa tài khoản
+               onclick="return confirm('Bạn có chắc chắn muốn khóa tài khoản này?');">Khóa tài khoản
             </a>
 
             <!-- Nút Mở khóa tài khoản -->
             <a th:href="@{/admin/customers/{id}/unlock(id=${customer.userID})}"
                th:if="${!customer.active}" class="btn btn-custom-gray"
-               onclick="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản này?');">
-                Mở khóa tài khoản
+               onclick="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản này?');">Mở khóa tài khoản
             </a>
         </div>
 

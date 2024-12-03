@@ -77,7 +77,7 @@ public class AdminCustomerController {
     @GetMapping("/{id}/unlock")
     public String unlockCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            customerService.updateActiveStatus(id, true); // Mở khóa tài khoản
+            customerService.updateActiveStatus(id, true); // Mở khóa tài khoả
             redirectAttributes.addFlashAttribute("successMessage", "Mở khóa thành công!");
         } catch (Exception e) {
             e.printStackTrace();
