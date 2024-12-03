@@ -33,12 +33,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("select u.password from UserEntity u where u.email=?1")
     String getUserEntitiesByUserId(String email);
 
-    boolean existsByEmailAndPasswordAndActive(String email, String password, Boolean active);
+    boolean existsByEmailAndPassword(String email, String password);
 
 
     @Query(value = "SELECT u.userID FROM UserEntity u " +
             "WHERE u.email = :email"
     )
     Long findIdByEmail(@Param("email") String email);
+
+    boolean existsByEmail(String email);
+    boolean existsByEmailAndActive(String email, Boolean active);
 
 }

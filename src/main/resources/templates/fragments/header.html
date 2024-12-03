@@ -32,9 +32,7 @@
 <!--                                        </div>-->
 <!--                                    </div>-->
 <!--                                </li>-->
-                                <li>
-                                    <a th:href="@{/cart}">Giỏ hàng</a>
-                                </li>
+
                                 <th:block th:if="${session.username}">
                                     <li>
                                         <a  href="/personal-info" th:text="${session.fullName}"></a>

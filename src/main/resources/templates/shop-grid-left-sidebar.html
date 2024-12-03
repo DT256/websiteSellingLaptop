@@ -16,64 +16,84 @@
 		<div class="wrapper box-layout">
 
 
-			<!-- page wrapper start -->
+			<!-- Page Wrapper Start -->
 			<div class="page-main-wrapper">
 				<div class="container">
 					<div class="row">
-						<!-- Đoạn tự thêm -->
+						<!-- Search and Filter Card -->
 						<div class="card mb-4 shadow">
 							<div class="card-body">
 								<form action="/products" method="get">
 									<div class="row">
+										<!-- Tìm kiếm theo tên sản phẩm -->
 										<div class="col-md-4 mb-3">
 											<input type="text" class="form-control" name="searchName"
-												placeholder="Tìm kiếm theo tên sản phẩm" />
+												   placeholder="Tìm kiếm theo tên sản phẩm"
+												   th:value="${searchName}" />
 										</div>
+
+										<!-- Chọn danh mục -->
 										<div class="col-md-3 mb-3">
 											<select class="form-select" name="category">
 												<option value="">Chọn danh mục</option>
 												<option th:each="category : ${categories}"
-													th:value="${category.name}" th:text="${category.name}">
-													Danh mục</option>
+														th:value="${category.name}"
+														th:selected="${category.name == category}">
+													<span th:text="${category.name}">Danh mục</span>
+												</option>
 											</select>
 										</div>
+
+										<!-- Chọn hãng -->
 										<div class="col-md-2 mb-3">
 											<select class="form-control" name="manufacturer">
 												<option value="">Chọn hãng</option>
-												<option value="LENOVO">Lenovo</option>
-												<option value="MSI">MSI</option>
-												<option value="ASUS">ASUS</option>
-												<option value="ACER">Acer</option>
-												<option value="DELL">Dell</option>
+												<option th:selected="${'LENOVO' == manufacturer}" value="LENOVO">Lenovo</option>
+												<option th:selected="${'MSI' == manufacturer}" value="MSI">MSI</option>
+												<option th:selected="${'ACER' == manufacturer}" value="ACER">Acer</option>
+												<option th:selected="${'DELL' == manufacturer}" value="DELL">Dell</option>
+												<option th:selected="${'ASUS' == manufacturer}" value="ASUS">Asus</option>
 											</select>
 										</div>
+
+										<!-- Giá tối thiểu -->
 										<div class="col-md-3 mb-3">
 											<input type="number" class="form-control" name="minPrice"
-												placeholder="Giá tối thiểu" />
+												   placeholder="Giá tối thiểu"
+												   th:value="${minPrice}" />
 										</div>
+
+										<!-- Giá tối đa -->
 										<div class="col-md-3 mb-3">
 											<input type="number" class="form-control" name="maxPrice"
-												placeholder="Giá tối đa" />
+												   placeholder="Giá tối đa"
+												   th:value="${maxPrice}" />
 										</div>
+
+										<!-- Chọn CPU -->
 										<div class="col-md-3 mb-3">
 											<select class="form-control" name="cpu">
 												<option value="">Chọn CPU</option>
-												<option value="Intel">Intel</option>
-												<option value="AMD">AMD</option>
+												<option th:selected="${'Intel' == cpu}" value="Intel">Intel</option>
+												<option th:selected="${'AMD' == cpu}" value="AMD">AMD</option>
 											</select>
 										</div>
+
+										<!-- Chọn GPU -->
 										<div class="col-md-3 mb-3">
 											<select class="form-control" name="gpu">
 												<option value="">Chọn GPU</option>
-												<option value="NVIDIA">NVIDIA</option>
-												<option value="AMD">AMD</option>
+												<option th:selected="${'NVIDIA' == gpu}" value="NVIDIA">NVIDIA</option>
+												<option th:selected="${'AMD' == gpu}" value="AMD">AMD</option>
 											</select>
 										</div>
+
+										<!-- Chọn dung lượng ổ đĩa -->
 										<div class="col-md-3 mb-3">
 											<select class="form-control" name="disk">
 												<option value="">Chọn dung lượng ổ đĩa</option>
-												<option value="256GB">256GB</option>
-												<option value="512GB">512GB</option>
+												<option th:selected="${'256GB' == disk}" value="256GB">256GB</option>
+												<option th:selected="${'512GB' == disk}" value="512GB">512GB</option>
 											</select>
 										</div>
 									</div>
@@ -84,37 +104,30 @@
 								</form>
 							</div>
 						</div>
+
 						<!-- Danh sách sản phẩm -->
 						<div class="shop-product-wrap grid row">
-							<!-- Lặp qua danh sách sản phẩm -->
-							<div class="col-lg-3 col-md-4 col-sm-6"
-								th:each="product : ${products}">
-								<!-- product single grid item start -->
+							<!-- Loop through products -->
+							<div class="col-lg-3 col-md-4 col-sm-6" th:each="product : ${products}">
+								<!-- Product single grid item -->
 								<div class="product-item fix mb-30">
 									<div class="product-thumb">
-										<a th:href="@{'/product/' + ${product.productID}}"> <th:block
-												th:if="${product.detail != null && product.detail.images != null && product.detail.images.size() > 0}">
-												<img th:src="@{${product.detail.images[0].imageUrl}}"
-													class="img-pri" alt="Primary Image">
-											</th:block> <img src="assets/img/product/placeholder.jpg"
-											class="img-sec" alt="Placeholder"
-											th:if="${product.detail == null || product.detail.images.size() == 0}">
+										<a th:href="@{'/product/' + ${product.productID}}">
+											<img th:if="${product.detail != null && product.detail.images != null && product.detail.images.size() > 0}"
+												 th:src="@{${product.detail.images[0].imageUrl}}" class="img-pri" alt="Primary Image">
+											<img src="assets/img/product/placeholder.jpg"
+												 class="img-sec" alt="Placeholder"
+												 th:if="${product.detail == null || product.detail.images.size() == 0}">
 										</a>
 										<div class="product-label">
 											<span>hot</span>
 										</div>
 										<div class="product-action-link">
 											<form th:action="@{/cart/add}" method="post" style="display:inline;">
-												<!-- Truyền productId và quantity qua input hidden -->
 												<input type="hidden" name="productId" th:value="${product.getProductID()}" />
 												<input type="hidden" name="quantity" value="1" />
-
-												<!-- Nút thêm vào giỏ hàng -->
-												<button type="submit"
-														data-toggle="tooltip"
-														data-placement="left"
-														title="Add to cart"
-														style="border: none; background: none;">
+												<button type="submit" data-toggle="tooltip" data-placement="left"
+														title="Add to cart" style="border: none; background: none;">
 													<i class="fa fa-shopping-cart"></i>
 												</button>
 											</form>
@@ -122,64 +135,71 @@
 									</div>
 									<div class="product-content">
 										<h4>
-											<a th:href="@{'/product/' + ${product.productID}}"
-												th:text="${product.name}">Product Name</a>
+											<a th:href="@{'/product/' + ${product.productID}}" th:text="${product.name}">Product Name</a>
 										</h4>
 										<div class="pricebox">
-											<span class="regular-price"
-												th:text="${product.price} + ' VND'">Price</span>
+											<span class="regular-price" th:text="${product.price} + ' VND'">Price</span>
 											<div class="ratings">
-												<span th:each="i : ${#numbers.sequence(1, 5)}"
-													th:classappend="${i <= product.averageRating} ? 'good' : ''">
-													<i class="fa fa-star"></i>
-												</span>
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+										  th:classappend="${i <= product.averageRating} ? 'good' : ''">
+                                        <i class="fa fa-star"></i>
+                                    </span>
 												<div class="pro-review">
-													<span th:text="${product.reviewCount} + ' review(s)'">1
-														review(s)</span>
+													<span th:text="${product.reviewCount} + ' review(s)'">1 review(s)</span>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-								<!-- product single grid item end -->
 							</div>
-
 						</div>
 
+						<!-- Pagination -->
 						<div class="pagination-wrapper mt-4">
 							<ul class="pagination justify-content-center">
-								<!-- Nút Previous -->
+								<!-- Previous -->
 								<li class="page-item" th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
-									<a class="page-link" th:href="@{'/products'(page=${page.number - 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
+									<a class="page-link" th:href="@{'/products'(page=${page.number - 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
 										Previous
 									</a>
 								</li>
 
-								<!-- Hiển thị danh sách các trang -->
+								<!-- Page Numbers -->
 								<li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
 									th:classappend="${page.number == i} ? 'active' : ''">
-									<a class="page-link" th:href="@{'/products'(page=${i}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}"
-									   th:text="${i + 1}">1</a>
+									<a class="page-link" th:href="@{'/products'(page=${i}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}" th:text="${i + 1}">1</a>
 								</li>
 
-								<!-- Nút Next -->
+								<!-- Next -->
 								<li class="page-item" th:classappend="${page.hasNext()} ? '' : 'disabled'">
-									<a class="page-link" th:href="@{'/products'(page=${page.number + 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
+									<a class="page-link" th:href="@{'/products'(page=${page.number + 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
 										Next
 									</a>
 								</li>
 							</ul>
 						</div>
-
-
-
 					</div>
-
 				</div>
 			</div>
 
-
 		</div>
+						<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="successModalLabel">Thông báo</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<span th:text="${message}">Đã thêm sản phẩm vào giỏ hàng!</span>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
 
 
 
@@ -218,9 +238,15 @@
 								element.textContent = formattedPrice + ' VND';
 							}
 						});
+				const message = /*[[${message}]]*/ ''; // Thymeleaf sẽ xử lý giá trị này
+				if (message) {
+					const modal = new bootstrap.Modal(document.getElementById('successModal'));
+					modal.show();
+				}
 			});
 		</script>
 	</section>
+
 </body>
 
 
