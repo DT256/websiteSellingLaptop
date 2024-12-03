@@ -1,17 +1,39 @@
 package com.group4.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group4.entity.AddressEntity;
 import com.group4.model.AddressModel;
 import com.group4.repository.AddressRepository;
-import com.group4.service.IAddressService;
+import com.group4.repository.PersonalInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+
 @Service
-public class AddressServiceImpl implements IAddressService {
+public class AddressServiceImpl {
 
     @Autowired
     private AddressRepository addressRepository;
+    @Autowired
+    private PersonalInfoRepository personalInfoRepository;
+    // Đọc file Address.json và ánh xạ vào AddressModel
+    public AddressModel loadAddressFromJson() {
+        try {
+            // Đọc dữ liệu từ file Address.json
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File("src/main/Address.json");
+
+            // Ánh xạ JSON vào AddressModel
+            AddressModel addressModel = objectMapper.readValue(file, AddressModel.class);
+
+            return addressModel;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // Xử lý lỗi nếu có
+        }
+    }
 
     public boolean updateAddressForUser(AddressModel addressModel, Long addressID) {
         try {

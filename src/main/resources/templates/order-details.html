@@ -35,11 +35,11 @@
                 <p><strong>Mã đơn hàng:</strong> <span th:text="${order.orderId}">12345</span></p>
                 <p><strong>Tên khách hàng:</strong> <span th:text="${order.customer.name}">OVP</span></p>
                 <p><strong>Địa chỉ giao:</strong>
-                    <span th:text="${order.shippingAddress.other ?: ''} + ' '
-                   + ${order.shippingAddress.commune ?: ''} + ', '
-                   + ${order.shippingAddress.district ?: ''} + ', '
-                   + ${order.shippingAddress.province ?: ''} + ', '
-                   + ${order.shippingAddress.country ?: ''}"> Địa chỉ mặc định
+                    <span th:text="  ${order.shippingAddress.other ?: ''} + ' '
+                                   + ${order.shippingAddress.commune ?: ''} + ', '
+                                   + ${order.shippingAddress.district ?: ''} + ', '
+                                   + ${order.shippingAddress.province ?: ''} + ', '
+                                   + ${order.shippingAddress.country ?: ''}"> Địa chỉ mặc định
                     </span>
                 </p>
                 <p><strong>Ngày đặt:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}">01/01/2024</span>
@@ -75,7 +75,6 @@
                         <th scope="col">Tên sản phẩm</th>
                         <th scope="col">Số lượng</th>
                         <th scope="col">Giá</th>
-                        <th scope="col">Tổng tiền</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -90,34 +89,23 @@
 
                         <td th:text="${lineItem.product.name}">Laptop ABC</td>
                         <td th:text="${lineItem.quantity}">2</td>
-                        <td th:text="${lineItem.product.price} + ' VND'">15,000,000 VND</td>
-                        <td th:text="${totalvalue} + ' VND'">30,000,000 VND</td>
+                        <td th:text="${lineItem.product.price * lineItem.quantity} + ' VND'">15,000,000 VND</td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(order.listLineItems)}">
                         <td colspan="6" class="text-center">Không có sản phẩm nào!</td>
                     </tr>
                     </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-weight: bold;">Tổng tiền:</td>
+                            <td th:text="${totalvalue} + ' VND'">30,000,000 VND</td>
+                        </tr>
+                    </tfoot>
+
                 </table>
             </div>
         </div>
-
-        <div class="mt-3">
-            <!-- Hiển thị nút xác nhận hủy và từ chối hủy nếu trạng thái là "Yêu cầu hủy" -->
-            <div th:if="${order.shippingStatus == 'Yêu cầu huỷ'}">
-                <form th:action="@{/admin/orders/{id}/confirm(id=${order.orderId})}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-success"
-                            onclick="return confirm('Bạn có chắc chắn muốn xác nhận hủy đơn hàng này?');">
-                        Xác nhận hủy
-                    </button>
-                </form>
-
-                <form th:action="@{/admin/orders/{id}/cancel(id=${order.orderId})}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Bạn có chắc chắn muốn từ chối hủy đơn hàng này?');">
-                        Từ chối hủy
-                    </button>
-                </form>
-            </div>
 
             <!-- Hiển thị thông báo nếu trạng thái đơn hàng đã được hủy -->
             <div th:if="${order.shippingStatus == 'Đã hủy'}">
@@ -125,8 +113,6 @@
             </div>
 
         </div>
-    </div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </section>

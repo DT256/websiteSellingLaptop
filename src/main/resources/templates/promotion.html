@@ -20,13 +20,7 @@
     <div class="wrapper box-layout">
 
         <div class="container" id="promotions-list">
-            <h2>Promotions</h2>
-            <div th:if="${successMessage}" class="alert alert-success">
-                <p th:text="${successMessage}"></p>
-            </div>
-            <div th:if="${errorMessage}" class="alert alert-danger">
-                <p th:text="${errorMessage}"></p>
-            </div>
+            <h2>Mã khuyến mãi</h2>
             <!-- Add New Promotion Button -->
             <a th:href="@{/admin/promotions/add}" class="btn btn-danger">Tạo mới mã khuyến mãi </a>
 

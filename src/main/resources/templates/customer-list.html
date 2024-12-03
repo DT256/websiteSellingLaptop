@@ -12,6 +12,14 @@
 
 <body>
 <section class="row" layout:fragment="content">
+    <div class="container mt-3">
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+    </div>
     <div class="container mt-5">
         <!-- Tiêu đề -->
         <h1 class="text-center">Danh sách khách hàng</h1>
@@ -41,7 +49,6 @@
                 <th style="text-align: center; vertical-align: middle;" scope="col">STT</th>
                 <th style="text-align: center; vertical-align: middle;" scope="col">Tên</th>
                 <th style="text-align: center; vertical-align: middle;" scope="col">Email</th>
-                <th style="text-align: center; vertical-align: middle;" scope="col">Giới tính</th>
                 <th style="text-align: center; vertical-align: middle;" scope="col">Số điện thoại</th>
                 <th style="text-align: center; vertical-align: middle;" scope="col">Địa chỉ</th>
                 <th style="text-align: center; vertical-align: middle;" scope="col">Thông tin chi tiết</th>
@@ -54,13 +61,11 @@
                 <td th:text="${iterStat.count}">1</td>
                 <td th:text="${customer.name}">Nguyễn Văn A</td>
                 <td th:text="${customer.email}">example@gmail.com</td>
-                <td th:text="${customer.gender}">Nam</td>
                 <td th:text="${customer.phone}">0123456789</td>
                 <td th:text="${customer.address.other} + ' ' + ${customer.address.commune} + ', ' +${customer.address.district} + ', ' +${customer.address.province} + ', ' +${customer.address.country}"></td>
 
                 <td style="text-align: center; vertical-align: middle;">
-                    <a th:href="@{/admin/customers/{id}(id=${customer.userID})}" class="btn btn-info btn-sm text-white">Chi
-                        tiết</a>
+                    <a th:href="@{/admin/customers/{id}(id=${customer.userID})}" class="btn btn-danger custom-hover">Chi tiết</a>
                 </td>
 
                 <td style="text-align: center; vertical-align: middle;">

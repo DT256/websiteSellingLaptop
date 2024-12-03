@@ -7,8 +7,10 @@ import com.group4.entity.*;
 import com.group4.repository.ProductRepository;
 import com.group4.service.IOrderService;
 import com.group4.service.IProductService;
+import com.group4.service.IPromotionService;
 import com.group4.service.IUserService;
 import com.group4.service.impl.AddressServiceImpl;
+import com.group4.service.impl.PromotionServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,12 +43,15 @@ public class PurchaseController {
     private ProductRepository productRepository;
     @Autowired
     private AddressServiceImpl addressServiceImpl;
+    @Autowired
+    private IPromotionService promotionService = new PromotionServiceImpl();
 
     @GetMapping("/purchase/checkout/buyNow")
     public String buyNow(
             HttpServletRequest request,
             HttpSession session,
             Model model) {
+        session.removeAttribute("appliedPromotion");
         Long productId = Long.parseLong(request.getParameter("productId"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
 
@@ -67,8 +72,8 @@ public class PurchaseController {
         lineItem.setQuantity(quantity);
         lineItem.setProduct(product);
         lineItems.add(lineItem);
-        long total = lineItems.stream()
-                .mapToLong(li -> (long) li.getQuantity() * li.getProduct().getPrice())
+        int total = lineItems.stream()
+                .mapToInt(li -> li.getQuantity() * li.getProduct().getPrice())
                 .sum();
 
         model.addAttribute("lineitems", lineItems);
@@ -77,17 +82,24 @@ public class PurchaseController {
         session.setAttribute("lineitems", lineItems);
         session.setAttribute("total", total);
         session.setAttribute("address", address);
-
+        PromotionEntity promotion = (PromotionEntity) session.getAttribute("appliedPromotion");
+        if (promotion != null) {
+            session.removeAttribute("appliedPromotion"); // Xóa mã giảm giá khỏi session sau khi áp dụng
+        }
         return "checkout";
     }
 
     @PostMapping("/purchase/checkout/buyInCart")
-    public String buyInCart(@RequestParam("cartData") String cartData, HttpSession session, Model model) throws JsonProcessingException {
+    public String buyInCart(@RequestParam("cartData") String cartData,
+                            @RequestParam("total") String totalStr,
+                            @RequestParam("discount") String discountStr,
+                            HttpSession session, Model model) throws JsonProcessingException {
+        session.removeAttribute("appliedPromotion");
         cartData = cartData.substring(1, cartData.length() - 1);
 
+        int totalLineItem = 0;
         String[] items = cartData.split(",");
         List<LineItemEntity> lineItems = new ArrayList<>();
-        long total = 0;
         for (String item : items) {
             String[] parts = item.split(" ");
             LineItemEntity lineItem = new LineItemEntity();
@@ -96,8 +108,8 @@ public class PurchaseController {
             lineItem.setProduct(product);
             int quantity = Integer.parseInt(parts[1]);
             lineItem.setQuantity(quantity);
-            total += (long) quantity * product.getPrice();
             lineItems.add(lineItem);
+            totalLineItem += quantity*product.getPrice();
         }
 
         CustomerEntity currentUser = (CustomerEntity) session.getAttribute("user");
@@ -106,13 +118,29 @@ public class PurchaseController {
         }
         AddressEntity address = currentUser.getAddress();
 
+        int total = Integer.parseInt(totalStr);
+        int discount = Integer.parseInt(discountStr);
+
         model.addAttribute("address", address);
         model.addAttribute("lineitems", lineItems);
         model.addAttribute("total", total);
+        model.addAttribute("discount", discount);
+        model.addAttribute("totalLineItem", totalLineItem);
+
 
         session.setAttribute("lineitems", lineItems);
+        session.setAttribute("totalLineItem", totalLineItem);
+        session.setAttribute("discount", discount);
         session.setAttribute("total", total);
         session.setAttribute("address", address);
+
+        // Giảm số lần sử dụng mã giảm giá nếu có trong session
+        PromotionEntity promotion = (PromotionEntity) session.getAttribute("appliedPromotion");
+        if (promotion != null) {
+            promotion.setRemainingUses(promotion.getRemainingUses() - 1);
+            promotionService.save(promotion);
+            session.removeAttribute("appliedPromotion"); // Xóa mã giảm giá khỏi session sau khi áp dụng
+        }
 
         return "checkout";
     }
@@ -139,8 +167,6 @@ public class PurchaseController {
             return "checkout";
         }
 
-
-
         CustomerEntity currentUser = (CustomerEntity) session.getAttribute("user");
         boolean checkAddress = true;
         if (currentUser.getAddress() == null)
@@ -158,12 +184,18 @@ public class PurchaseController {
         address.setCommune(commune);
         address.setOther(other);
 
-
-        Long total = (Long) session.getAttribute("total");
+        int total = (int)session.getAttribute("total");
         String phone = request.getParameter("phone");
         String note = request.getParameter("ordernote");
 
         Long orderId = orderService.createOrder(lineItems,currentUser,address,total,checkAddress, phone, note).getOrderId();
+
+        session.removeAttribute("lineitems");
+        session.removeAttribute("totalLineItem");
+        session.removeAttribute("discount");
+        session.removeAttribute("total");
+        session.removeAttribute("address");
+
         return "redirect:/payment?orderId="+orderId+"&amount="+total;
     }
 

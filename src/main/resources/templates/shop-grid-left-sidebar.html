@@ -15,29 +15,25 @@
 
 		<div class="wrapper box-layout">
 
-			<!-- breadcrumb area start -->
-			<div class="breadcrumb-area">
-				<div class="container">
-					<div class="row">
-						<div class="col-12">
-							<div class="breadcrumb-wrap">
-								<nav aria-label="breadcrumb">
-									<ul class="breadcrumb">
-										<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-										<li class="breadcrumb-item active" aria-current="page">Products</li>
-									</ul>
-								</nav>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- breadcrumb area end -->
 
 			<!-- page wrapper start -->
 			<div class="page-main-wrapper">
 				<div class="container">
-					<div class="row">
+					<div class="container">
+						<!-- Thêm đoạn hiển thị thông báo tại đây -->
+						<div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+							<span th:text="${message}">Thông báo thành công</span>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+
+						<div class="row">
+							<!-- Đoạn tự thêm -->
+							<div class="card mb-4 shadow">
+								<div class="card-body">
+									<form action="/products" method="get">
+										<!-- Nội dung form tìm kiếm -->
+
+										<div class="row">
 						<!-- Đoạn tự thêm -->
 						<div class="card mb-4 shadow">
 							<div class="card-body">
@@ -58,8 +54,11 @@
 										<div class="col-md-2 mb-3">
 											<select class="form-control" name="manufacturer">
 												<option value="">Chọn hãng</option>
-												<option value="Lenovo">Lenovo</option>
-												<option value="HP">HP</option>
+												<option value="LENOVO">Lenovo</option>
+												<option value="MSI">MSI</option>
+												<option value="ASUS">ASUS</option>
+												<option value="ACER">Acer</option>
+												<option value="DELL">Dell</option>
 											</select>
 										</div>
 										<div class="col-md-3 mb-3">
@@ -93,7 +92,7 @@
 										</div>
 									</div>
 									<div class="text-center">
-										<button type="submit" class="btn btn-primary">Tìm
+										<button type="submit" class="btn"  style="background-color: #d8373e; color: white">Tìm
 											kiếm</button>
 									</div>
 								</form>
@@ -161,33 +160,56 @@
 
 						</div>
 
+						<div class="pagination-wrapper mt-4">
+							<ul class="pagination justify-content-center">
+								<!-- Nút Previous -->
+								<li class="page-item" th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
+									<a class="page-link" th:href="@{'/products'(page=${page.number - 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
+										Previous
+									</a>
+								</li>
+
+								<!-- Hiển thị danh sách các trang -->
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+									th:classappend="${page.number == i} ? 'active' : ''">
+									<a class="page-link" th:href="@{'/products'(page=${i}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}"
+									   th:text="${i + 1}">1</a>
+								</li>
+
+								<!-- Nút Next -->
+								<li class="page-item" th:classappend="${page.hasNext()} ? '' : 'disabled'">
+									<a class="page-link" th:href="@{'/products'(page=${page.number + 1}, searchName=${searchName}, manufacturer=${manufacturer}, cpu=${cpu}, gpu=${gpu}, operationSystem=${operationSystem}, minPrice=${minPrice}, maxPrice=${maxPrice}, disk=${disk}, category=${category})}">
+										Next
+									</a>
+								</li>
+							</ul>
+						</div>
+
 
 
 					</div>
-					<!-- Phân trang -->
-					<nav aria-label="Page navigation">
-						<ul class="pagination justify-content-center">
-							<li class="page-item"
-								th:classappend="${page.number == 0} ? 'disabled'"><a
-								class="page-link"
-								th:href="@{|/products?page=${page.number - 1}|}">Trước</a></li>
-							<li class="page-item"
-								th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-								th:classappend="${i == page.number} ? 'active'"><a
-								class="page-link" th:href="@{|/products?page=${i}|}"
-								th:text="${i + 1}">1</a></li>
-							<li class="page-item"
-								th:classappend="${page.number == page.totalPages - 1} ? 'disabled'">
-								<a class="page-link"
-								th:href="@{|/products?page=${page.number + 1}|}">Sau</a>
-							</li>
-						</ul>
-					</nav>
+
 				</div>
 			</div>
 
-
 		</div>
+						<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="successModalLabel">Thông báo</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<span th:text="${message}">Đã thêm sản phẩm vào giỏ hàng!</span>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
 
 
 
@@ -226,9 +248,15 @@
 								element.textContent = formattedPrice + ' VND';
 							}
 						});
+				const message = /*[[${message}]]*/ ''; // Thymeleaf sẽ xử lý giá trị này
+				if (message) {
+					const modal = new bootstrap.Modal(document.getElementById('successModal'));
+					modal.show();
+				}
 			});
 		</script>
 	</section>
+
 </body>
 
 

@@ -97,7 +97,6 @@ public class RevenueServiceImpl implements IRevenueService {
     @Override
     public long calculateRevenue(LocalDateTime startDate, LocalDateTime endDate) {
         List<OrderEntity> orders = orderRepository.findOrdersWithShippingStatusAndReceiveDate(startDate, endDate);
-        System.out.println(orders);
         return orders.stream()
                 .mapToInt(order -> order.getPayment().getTotal())
                 .sum();

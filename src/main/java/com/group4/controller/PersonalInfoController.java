@@ -1,13 +1,18 @@
 package com.group4.controller;
 
+import com.group4.entity.UserEntity;
 import com.group4.model.AddressModel;
 import com.group4.model.UserModel;
-import com.group4.service.IAddressService;
 import com.group4.service.IPersonalInfoService;
+import com.group4.service.impl.AddressServiceImpl;
+import com.group4.service.impl.PersonalInfoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -15,19 +20,17 @@ import jakarta.servlet.http.HttpSession;
 public class PersonalInfoController {
 
     @Autowired
-    private IAddressService addressService ;
-    @Autowired
     private IPersonalInfoService service;
+    @Autowired
+    private AddressServiceImpl addressServiceImpl ;
+    @Autowired
+    private PersonalInfoServiceImpl personalInfoServiceImpl;
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
-        model.addAttribute("error", "Đã xảy ra lỗi: " + e.getMessage());
-        return "error";  // Trang lỗi tùy chỉnh
-    }
     // Lấy thông tin cá nhân và địa chỉ
     @GetMapping
     public String getPersonalInfo(HttpSession session,Model model) {
-        Long userID = (Long) session.getAttribute("userID"); // Lấy userID từ session
+        UserEntity userEntity = (UserEntity) session.getAttribute("user"); // Lấy userID từ session
+        Long userID = userEntity.getUserID();
         UserModel user = service.fetchPersonalInfo(userID); // Gọi Service để lấy thông tin người dùng
         if (user != null) {
             model.addAttribute("user", user); // Thêm thông tin người dùng vào model
@@ -38,10 +41,12 @@ public class PersonalInfoController {
     // Cập nhật thông tin cá nhân
     @PostMapping("/profile")
     public String updatePersonalInfo(HttpSession session, UserModel userModel, Model model) {
-        Long  userID= (Long) session.getAttribute("userID");
+        UserEntity userEntity = (UserEntity) session.getAttribute("user"); // Lấy userID từ session
+
+        Long userID = userEntity.getUserID();
         userModel.setUserID(userID);
-        boolean status = service.savePersonalInfo(userModel, userModel.getUserID()); // Lưu thông tin mới
-        if (status) {
+         // Lưu thông tin mới
+        if (service.savePersonalInfo(userModel, userModel.getUserID())) {
             model.addAttribute("message", "Cập nhật thông tin cá nhân thành công!");
             return "redirect:/personal-info?success"; // Chuyển hướng với trạng thái thành công
         } else {
@@ -53,7 +58,9 @@ public class PersonalInfoController {
 
     @PostMapping("/address")
     public String updateAddress(HttpSession session, @ModelAttribute AddressModel addressModel, Model model) {
-        Long userID = (Long) session.getAttribute("userID"); // Lấy userID từ session
+        UserEntity userEntity = (UserEntity) session.getAttribute("user"); // Lấy userID từ session
+
+        Long userID = userEntity.getUserID();
         UserModel user = service.fetchPersonalInfo(userID);
 
         AddressModel existingAddress = user.getAddress();
@@ -61,7 +68,7 @@ public class PersonalInfoController {
             addressModel.setAddressID(existingAddress.getAddressID());
         }
 
-        boolean status = addressService.updateAddressForUser(addressModel, addressModel.getAddressID());
+        boolean status = addressServiceImpl.updateAddressForUser(addressModel, addressModel.getAddressID());
         if (status) {
             model.addAttribute("message", "Cập nhật địa chỉ thành công!");
             return "redirect:/personal-info?address-success";
@@ -74,7 +81,8 @@ public class PersonalInfoController {
 
     @PostMapping("/password")
     public String changePassword(HttpSession session, String currentPassword, String newPassword, String confirmNewPassword, Model model) {
-        Long userID = (Long) session.getAttribute("userID"); // Lấy userID từ session
+        UserEntity userEntity = (UserEntity) session.getAttribute("user"); // Lấy userID từ session
+        Long userID = userEntity.getUserID();
         // Lấy thông tin người dùng từ database
         UserModel user = service.fetchPersonalInfo(userID);
 

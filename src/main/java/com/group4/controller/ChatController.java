@@ -39,7 +39,7 @@ public class ChatController {
 
         // Gửi ID tạm vào model để hiển thị lên trang
         model.addAttribute("GID", guestId);
-        return "index"; // trả về view home (home.html hoặc home.jsp)
+        return "Mainhome"; // trả về view home (home.html hoặc home.jsp)
     }
 
     private String generateRandomNumberString(int length) {

@@ -88,45 +88,6 @@ public class AdminOrderController {
         return "order-details";
     }
 
-    @PostMapping("/{id}/confirm")
-    public String confirmCancelOrder(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            OrderEntity order = orderService.getOrderById(id)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
-
-            // Chỉ xử lý nếu trạng thái là "Yêu cầu hủy"
-            if (!"Yêu cầu huỷ".equals(order.getShippingStatus())) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Chỉ có thể xác nhận hủy khi đơn hàng ở trạng thái 'Yêu cầu hủy'.");
-                return "redirect:/admin/orders";
-            }
-
-            orderService.confirmCancelOrder(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng đã được xác nhận hủy.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xác nhận hủy đơn hàng.");
-        }
-        return "redirect:/admin/orders";
-    }
-
-    @PostMapping("/{id}/cancel")
-    public String rejectCancelOrder(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            OrderEntity order = orderService.getOrderById(id)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
-
-            // Chỉ xử lý nếu trạng thái là "Yêu cầu hủy"
-            if (!"Yêu cầu huỷ".equals(order.getShippingStatus())) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Chỉ có thể từ chối hủy khi đơn hàng ở trạng thái 'Yêu cầu hủy'.");
-                return "redirect:/admin/orders";
-            }
-
-            orderService.rejectCancelOrder(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đơn hàng đã được từ chối hủy.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi từ chối hủy đơn hàng.");
-        }
-        return "redirect:/admin/orders";
-    }
     @GetMapping("/order-details")
     public String showOrderDetails(
             @RequestParam Long userId,
@@ -143,15 +104,15 @@ public class AdminOrderController {
         }
 
         if (selectedProductIds.isEmpty()) {
-            model.addAttribute("error", "No products selected!");
-            return "error";
+            model.addAttribute("errorMessage", "No products selected!");
+            return "errorMessage";
         }
 
         // Tạo đơn hàng và hiển thị chi tiết
         OrderEntity order = orderService.createOrder(userId, selectedProductIds);
         if (order == null) {
-            model.addAttribute("error", "Order not found");
-            return "error";
+            model.addAttribute("errorMessage", "Order not found");
+            return "errorMessage";
         }
 
         // Tính tổng giá trị đơn hàng
@@ -168,7 +129,7 @@ public class AdminOrderController {
     // Xử lý thanh toán (chỉ gọi URL thanh toán)
     @PostMapping("/pay")
     public String payOrder(@RequestParam Long orderId, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("message", "Redirecting to payment...");
+        redirectAttributes.addFlashAttribute("successMessage", "Redirecting to payment...");
         return "redirect:/payment?orderId=" + orderId;
     }
 }

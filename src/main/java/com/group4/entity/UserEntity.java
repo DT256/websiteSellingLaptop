@@ -41,5 +41,7 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", referencedColumnName = "address_id")
     private AddressEntity address;
-
+    public Boolean isActive() {
+        return true;
+    }
 }

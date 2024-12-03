@@ -41,8 +41,15 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
         if (products == null) {
             products = new ArrayList<>();
         }
-        products.add(product);
-        shoppingCart.setProducts(products);
+        // Check if the product already exists in the cart
+        boolean isProductInCart = products.stream()
+                .anyMatch(existingProduct -> existingProduct.getProductID().equals(product.getProductID()));
+
+        if (!isProductInCart) {
+            // Add the product only if it does not already exist
+            products.add(product);
+            shoppingCart.setProducts(products);
+        }
 
         return shoppingCartRepository.save(shoppingCart);
     }

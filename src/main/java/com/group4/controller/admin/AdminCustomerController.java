@@ -2,6 +2,7 @@ package com.group4.controller.admin;
 
 import com.group4.entity.CustomerEntity;
 import com.group4.entity.OrderEntity;
+import com.group4.repository.CustomerRepository;
 import com.group4.service.ICustomerService;
 import com.group4.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class AdminCustomerController {
     @Autowired
     private IOrderService orderService;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String listCustomers(Model model) {
@@ -43,6 +47,7 @@ public class AdminCustomerController {
 
     @GetMapping("/{id}")
     public String getCustomerDetails(@PathVariable Long id, Model model) {
+
         // Lấy thông tin khách hàng
         CustomerEntity customer = customerService.getCustomerById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
@@ -58,28 +63,26 @@ public class AdminCustomerController {
     // khóa tài khoản
     @GetMapping("/{id}/lock")
     public String lockCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        customerService.updateActiveStatus(id, false); // Khóa tài khoản
-        redirectAttributes.addFlashAttribute("message", "Khóa tài khoản thành công!");
+        try {
+            customerService.updateActiveStatus(id, false); // Khóa tài khoản
+            redirectAttributes.addFlashAttribute("successMessage", "Khóa thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Khoá không thành công: " + e.getMessage());
+        }
         return "redirect:/admin/customers"; // Quay lại danh sách khách hàng
     }
 
     // mở khóa tài khoản
     @GetMapping("/{id}/unlock")
     public String unlockCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        customerService.updateActiveStatus(id, true); // Mở khóa tài khoản
-        redirectAttributes.addFlashAttribute("message", "Mở khóa tài khoản thành công!");
-        return "redirect:/admin/customers"; // Quay lại danh sách khách hàng
-    }
-
-    // Xóa tài khoản
-    @GetMapping("/{id}/delete")
-    public String deleteCustomerAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            customerService.deleteCustomerAccount(id);
-            redirectAttributes.addFlashAttribute("message", "Xóa tài khoản thành công!");
+            customerService.updateActiveStatus(id, true); // Mở khóa tài khoản
+            redirectAttributes.addFlashAttribute("successMessage", "Mở khóa thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Không thể xóa tài khoản: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Mở khoá không thành công: " + e.getMessage());
         }
-        return "redirect:/admin/customers";
+        return "redirect:/admin/customers"; // Quay lại danh sách khách hàng
     }
 }

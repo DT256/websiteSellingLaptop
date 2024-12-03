@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<UserEntity, Long> {
-    List<CustomerEntity> findByNameContainingOrEmailContaining(String name, String email);
+    List<CustomerEntity> findByNameOrEmail(String name, String email);
 
     @Query("SELECT c FROM CustomerEntity c WHERE c.email = :email")
     Optional<CustomerEntity> findCustomerByEmail(@Param("email") String email);

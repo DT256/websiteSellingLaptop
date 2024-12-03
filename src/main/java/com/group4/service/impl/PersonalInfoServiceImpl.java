@@ -22,10 +22,10 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
 
     // Lấy thông tin cá nhân từ cơ sở dữ liệu
     public UserModel fetchPersonalInfo(Long userID) {
-        UserEntity userEntity = repository.retrieveInfoFormDB(userID);
+        Optional<UserEntity> userEntity = repository.findById(userID);
         if (userEntity != null) {
             // Đã có mối quan hệ OneToOne nên không cần gọi AddressRepository
-            AddressEntity addressEntity = userEntity.getAddress(); // Địa chỉ sẽ được lấy trực tiếp từ userEntity
+            AddressEntity addressEntity = userEntity.get().getAddress(); // Địa chỉ sẽ được lấy trực tiếp từ userEntity
             AddressModel addressModel = null;
             if (addressEntity != null) {
                 addressModel = new AddressModel(
@@ -38,14 +38,14 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
                 );
             }
             return new UserModel(
-                    userEntity.getUserID(),
-                    userEntity.getName(),
-                    userEntity.getEmail(),
-                    userEntity.getPassword(),
-                    userEntity.getGender(),
-                    userEntity.getPhone(),
-                    userEntity.getRoleName(),
-                    userEntity.isActive(),
+                    userEntity.get().getUserID(),
+                    userEntity.get().getName(),
+                    userEntity.get().getEmail(),
+                    userEntity.get().getPassword(),
+                    userEntity.get().getGender(),
+                    userEntity.get().getPhone(),
+                    userEntity.get().getRoleName(),
+                    userEntity.get().isActive(),
                     addressModel
             );
         }
@@ -61,7 +61,7 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
             }
 
             // Lấy thông tin người dùng hiện tại từ DB
-            UserEntity existingUserEntity = repository.retrieveInfoFormDB(userID);
+            Optional<UserEntity> existingUserEntity = repository.findById(userID);
             if (existingUserEntity == null) {
                 // Nếu không tìm thấy người dùng, không thể lưu
                 return false;
@@ -70,12 +70,12 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
             // Lấy các thông tin cần thiết
             String password = userModel.getPassword();
             if (password == null || password.isEmpty()) {
-                password = existingUserEntity.getPassword(); // Giữ nguyên mật khẩu hiện tại
+                password = existingUserEntity.get().getPassword(); // Giữ nguyên mật khẩu hiện tại
             }
-            boolean isActive = existingUserEntity.isActive();
-            String role = existingUserEntity.getRoleName();
+            boolean isActive = existingUserEntity.get().isActive();
+            String role = existingUserEntity.get().getRoleName();
             AddressModel addressModel = userModel.getAddress();
-            AddressEntity addressEntity = existingUserEntity.getAddress();
+            AddressEntity addressEntity = existingUserEntity.get().getAddress();
             if (addressModel != null) {
                 // Nếu có địa chỉ mới, cập nhật địa chỉ
                 addressEntity = new AddressEntity(
@@ -90,20 +90,17 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
             }
 
             // Tạo UserEntity từ UserModel
-            UserEntity userEntity = new UserEntity(
-                    userID, // Sử dụng userID hiện tại
-                    userModel.getName(),
-                    userModel.getEmail(),
-                    password,
-                    userModel.getGender(),
-                    userModel.getPhone(),
-                    role,
-                    isActive,
-                    addressEntity // Liên kết địa chỉ mới hoặc giữ nguyên địa chỉ cũ
-            );
+            UserEntity userEntity = repository.findById(userID).get();
+            userEntity.setPassword(password);
+            userEntity.setRoleName(role);
+            userEntity.setEmail(userModel.getEmail());
+            userEntity.setPhone(userModel.getPhone());
+            userEntity.setAddress(addressEntity);
+            userEntity.setName(userModel.getName());
 
+            System.out.println("Test1" + userEntity);
             // Lưu hoặc cập nhật thông tin người dùng
-            repository.saveInfoToDB(userEntity);
+            repository.save(userEntity);
 
             return true;
         } catch (Exception e) {
@@ -112,7 +109,7 @@ public class PersonalInfoServiceImpl implements IPersonalInfoService {
         }
     }
     @Override
-    public UserEntity findUserById(Long userID) {
-        return repository.retrieveInfoFormDB(userID); // Directly return the user
+    public Optional<UserEntity> findUserById(Long userID) {
+        return repository.findById(userID); // Directly return the user
     }
 }

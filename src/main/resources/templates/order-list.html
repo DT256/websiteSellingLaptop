@@ -9,6 +9,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <style>
+        /* CSS tùy chỉnh cho nút Khóa tài khoản */
+        .btn-danger.custom-hover {
+            background-color: #dc3545; /* Màu đỏ */
+            border-color: #dc3545;    /* Viền màu đỏ */
+            color: #fff;              /* Chữ màu trắng */
+        }
+
+        /* Hiệu ứng hover */
+        .btn-danger.custom-hover:hover {
+            background-color: #444444; /* Màu xám khi hover */
+            border-color: #444444;     /* Viền màu xám khi hover */
+            color: #fff;               /* Chữ giữ nguyên màu trắng */
+        }
+    </style>
 </head>
 <body>
 <section class="row" layout:fragment="content">
@@ -30,7 +45,7 @@
                    placeholder="Nhập mã đơn hàng" th:value="${searchKeyword}">
             <select name="status" >
                 <option value="">Tất cả</option>
-                <option value="Yêu cầu huỷ" th:selected="${status == 'Yêu cầu huỷ'}">Yêu cầu huỷ</option>
+<!--                <option value="Yêu cầu huỷ" th:selected="${status == 'Yêu cầu huỷ'}">Yêu cầu huỷ</option>-->
                 <option value="Đã huỷ" th:selected="${status == 'Đã huỷ'}">Đã huỷ</option>
                 <option value="Đang giao" th:selected="${status == 'Đang giao'}">Đang giao</option>
                 <option value="Đã giao" th:selected="${status == 'Đã giao'}">Đã giao</option>
@@ -59,8 +74,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="order, stat : ${orders}"
-                th:classappend="${order.shippingStatus == 'Yêu cầu hủy'} ? 'table-warning' : ''">
+            <tr th:each="order, stat : ${orders}">
+<!--                th:classappend="${order.shippingStatus == 'Yêu cầu hủy'} ? 'table-warning' : ''">-->
                 <td th:text="${stat.index + 1}">1</td>
                 <td th:text="${order.orderId}">12345</td>
                 <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
@@ -68,7 +83,7 @@
                 <td th:text="${orderTotalValues[order.orderId]}">1000000</td>
                 <td th:text="${order.shippingStatus}">Đang xử lý</td>
                 <td>
-                    <a th:href="@{/admin/orders/{id}(id=${order.orderId})}" class="btn btn-info btn-sm">Chi tiết</a>
+                    <a th:href="@{/admin/orders/{id}(id=${order.orderId})}" class="btn btn-danger custom-hover">Chi tiết</a>
                 </td>
             </tr>
             <tr th:if="${orders.isEmpty()}">

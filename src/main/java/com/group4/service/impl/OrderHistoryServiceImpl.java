@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,9 +88,9 @@ public class OrderHistoryServiceImpl implements IOrderHistoryService {
     }
 
     private UserModel convertToUserModel(Long userID) {
-        UserEntity userEntity = personalInfoService.findUserById(userID); // Hoặc gọi repository
-        return new UserModel(userEntity.getUserID(), userEntity.getName(), userEntity.getEmail(),
-                userEntity.getPassword(), userEntity.getGender(), userEntity.getPhone(),
-                userEntity.getRoleName(), userEntity.isActive(), convertToAddressModel(userEntity.getAddress()));
+        Optional<UserEntity> userEntity = personalInfoService.findUserById(userID); // Hoặc gọi repository
+        return new UserModel(userEntity.get().getUserID(), userEntity.get().getName(), userEntity.get().getEmail(),
+                userEntity.get().getPassword(), userEntity.get().getGender(), userEntity.get().getPhone(),
+                userEntity.get().getRoleName(), userEntity.get().isActive(), convertToAddressModel(userEntity.get().getAddress()));
     }
 }

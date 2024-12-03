@@ -38,4 +38,5 @@ public interface IProductService {
     public int getReviewCount(ProductEntity product);
 
     public Page<ProductEntity> getProducts(int page, int size);
+
 }

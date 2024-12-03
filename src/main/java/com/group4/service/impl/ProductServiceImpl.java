@@ -6,6 +6,7 @@ import com.group4.entity.RateEntity;
 import com.group4.model.CategoryModel;
 import com.group4.repository.CategoryRepository;
 import com.group4.repository.ProductRepository;
+import com.group4.repository.RateRepository;
 import com.group4.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,9 @@ public class ProductServiceImpl implements IProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private RateRepository rateRepository;
 
     @Override
     public List<ProductEntity> searchProducts(String keyword, Double minPrice, Double maxPrice,
@@ -89,18 +93,14 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public double calculateAverageRating(ProductEntity product) {
-        if (product.getRates() == null || product.getRates().isEmpty()) {
-            return 0.0;
-        }
-        return product.getRates().stream()
-                .mapToInt(RateEntity::getRate)
-                .average()
-                .orElse(0.0);
+        Double avgRating = rateRepository.findAverageRatingByProductId(product.getProductID());
+        return avgRating != null ? avgRating : 0.0;
     }
 
     @Override
     public int getReviewCount(ProductEntity product) {
-        return (product.getRates() == null) ? 0 : product.getRates().size();
+        Integer reviewCount = rateRepository.findReviewCountByProductId(product.getProductID());
+        return reviewCount != null ? reviewCount : 0;
     }
 
 

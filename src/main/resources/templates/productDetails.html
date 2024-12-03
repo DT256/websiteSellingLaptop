@@ -41,11 +41,11 @@
 }
 
 .left-arrow {
-	left: 225px;
+	left: 125px;
 }
 
 .right-arrow {
-	right: 225px;
+	right: 125px;
 }
 
 .arrow:hover {
@@ -293,7 +293,7 @@ p, .price {
 				var productId = document
 						.querySelector('input[name="productId"]').value;
 				var quantity = document.querySelector('input[name="quantity"]').value;
-				window.location.href = "/check-out?action=buyNow&productId="
+				window.location.href = "/purchase/checkout/buyNow?productId="
 						+ productId + "&quantity=" + quantity;
 			}
 

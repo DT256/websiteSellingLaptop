@@ -32,12 +32,10 @@
 <!--                                        </div>-->
 <!--                                    </div>-->
 <!--                                </li>-->
-                                <li>
-                                    <a href="#">Giỏ hàng</a>
-                                </li>
+
                                 <th:block th:if="${session.username}">
                                     <li>
-                                        <a th:text="${session.fullName}"></a>
+                                        <a  href="/personal-info" th:text="${session.fullName}"></a>
                                         <a href="/logout">Đăng xuất</a>
                                     </li>
                                 </th:block>
@@ -68,45 +66,6 @@
                         </a>
                     </div>
                 </div> <!-- end logo area -->
-                <div class="col-lg-9">
-                    <div class="header-middle-right">
-                        <div class="header-middle-block">
-                            <div class="header-middle-searchbox">
-                                <input type="text" placeholder="Search...">
-                                <button class="search-btn"><i class="fa fa-search"></i></button>
-                            </div>
-                            <div class="header-mini-cart">
-                                <div class="mini-cart-btn">
-                                    <i class="fa fa-shopping-cart"></i>
-                                </div>
-                                <div class="cart-total-price">
-                                    $0.00
-                                </div>
-                                <ul class="cart-list">
-                                    <li>
-                                        <div class="cart-img">
-                                            <a th:href="@{/templates/product-details.html}"><img th:src="@{/assets/img/cart/cart-2.jpg}" alt=""></a>
-                                        </div>
-                                        <div class="cart-info">
-                                            <h4><a th:href="@{/templates/product-details.html}">virtual product 10</a></h4>
-                                            <span>$50.00</span>
-                                        </div>
-                                        <div class="del-icon">
-                                            <i class="fa fa-times"></i>
-                                        </div>
-                                    </li>
-                                    <li class="mini-cart-price">
-                                        <span class="subtotal">Tổng cộng : </span>
-                                        <span class="subtotal-price">$88.66</span>
-                                    </li>
-                                    <li class="checkout-btn">
-                                        <a th:href="@{/checkout}">Mua ngay</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -120,17 +79,11 @@
                     <div class="main-header-inner">
                         <div class="category-toggle-wrap">
                             <div class="category-toggle">
-                                category
+                                CNPM
                                 <div class="cat-icon">
-                                    <i class="fa fa-angle-down"></i>
+                                    <i class="fa fa-laptop"></i>
                                 </div>
                             </div>
-                            <nav class="category-menu category-style-2">
-                                <ul>
-                                    <li><a th:href="@{/templates/shop-grid-left-sidebar.html}"><i class="fa fa-desktop"></i> Latop Gaming</a></li>
-                                    <li><a th:href="@{/templates/shop-grid-left-sidebar.html}"><i class="fa fa-desktop"></i> Latop văn phòng</a></li>
-                                </ul>
-                            </nav>
 
                         </div>
                         <div class="main-menu">
@@ -138,16 +91,22 @@
                                 <ul>
                                     <li class="active"><a th:href="@{/home}"><i class="fa fa-home"></i>Trang chủ </a></li>
                                     <li class="static"><a th:href="@{/products}">Sản phẩm</a></li>
-                                    <li class="static"><a th:href="@{/about-us}">Về chúng tôi</a></li>
-                                    <li class="static"><a th:href="@{/contact}">Liên hệ</a></li>
-                                    <li class="static"><a th:href="@{/history}">Lịch sử mua hàng</a></li>
+                                    <li class="static" th:if="${session.roleName == 'Customer'}">
+                                        <a th:href="@{/history}">Lịch sử mua hàng</a></li>
                                     <li th:if="${session.roleName == 'Admin'}">
-                                        <a href="/admin/products">Quản Lý Sản Phẩm</a>
-                                            	<ul class="dropdown">                       
-                                                    <li><a href="/admin/manufacturers">Nhà Sản Xuất</a></li>
-                                                    <li><a href="/admin/categories">Thể Loại</a></li>
-                                                    <li><a href="/admin/inventory">Kho</a></li>
-                                                </ul>
+                                        <a>Quản Lý Sản Phẩm</a>
+                                        <ul class="dropdown">
+                                            <li><a href="/admin/products">Sản Phẩm</a></li>
+                                            <li><a href="/admin/manufacturers">Nhà Sản Xuất</a></li>
+                                            <li><a href="/admin/categories">Thể Loại</a></li>
+                                            <li><a href="/admin/inventory">Kho</a></li>
+                                            <li><a href="/admin/rate-list">Phản hồi đánh giá</a></li>
+                                            <li><a href="/admin/orders">Quản lý đơn hàng</a></li>
+                                            <li><a href="/admin/customers">Quản lý khách hàng</a></li>
+                                        </ul>
+                                    </li>
+                                    <li th:if="${session.roleName == 'Admin'}">
+                                        <a th:href="@{/admin/dashboard}">Doanh Thu</a>
                                     </li>
                                 </ul>
                             </nav>

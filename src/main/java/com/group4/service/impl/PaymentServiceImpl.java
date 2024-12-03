@@ -87,17 +87,18 @@ public class PaymentServiceImpl implements IPaymentService {
     public void handlePayQr(Long orderId, int amount) {
         Optional<OrderEntity> orderOtn = orderRepository.findById(orderId);
         OrderEntity order = orderOtn.get();
-        order.setPaymentStatus("Paid");
+        order.setPaymentStatus("Completed");
 
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setTransactionID(orderId.toString());
         paymentEntity.setPaymentMethod("QR");
-        paymentEntity.setPaymentStatus("success");
+        paymentEntity.setPaymentStatus("Completed");
         paymentEntity.setPaymentDate(LocalDateTime.now());
         paymentEntity.setTotal(amount);
         paymentEntity.setOrder(order);
 
         paymentRepository.save(paymentEntity);
+        order.setPayment(paymentEntity);
         orderRepository.save(order);
 
         EmailDetail emailDetail = new EmailDetail();
@@ -140,7 +141,7 @@ public class PaymentServiceImpl implements IPaymentService {
     public void handlePayBank(String transactionNo, String bankCode, String transactionStatus, LocalDateTime localDateTime, int amount, Long orderId){
         Optional<OrderEntity> orderOtn = orderRepository.findById(orderId);
         OrderEntity order = orderOtn.get();
-        order.setPaymentStatus("Paid");
+        order.setPaymentStatus("Completed");
 
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setTransactionID(transactionNo);
@@ -151,6 +152,7 @@ public class PaymentServiceImpl implements IPaymentService {
         paymentEntity.setOrder(order);
 
         paymentRepository.save(paymentEntity);
+        order.setPayment(paymentEntity);
         orderRepository.save(order);
 
         EmailDetail emailDetail = new EmailDetail();

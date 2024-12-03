@@ -54,7 +54,7 @@ public class HistoryServiceImpl implements IHistoryService {
 
             System.out.println(order);
 
-            order.setShippingStatus("CANCEL");
+            order.setShippingStatus("CANCELED");
             orderRepository.save(order);
 
             EmailDetail emailDetail = new EmailDetail();

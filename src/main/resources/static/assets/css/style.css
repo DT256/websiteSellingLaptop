@@ -7557,3 +7557,39 @@ body.image-bg .wrapper {
 }
 
 
+
+.fixed-cart-btn {
+    position: fixed; /* Cố định vị trí */
+    bottom: 100px; /* Cách đáy 50px */
+    right: 20px; /* Cách cạnh phải 20px */
+    z-index: 1000; /* Đảm bảo nằm trên các phần tử khác */
+}
+
+.fixed-cart-btn .cart-btn {
+    width: 60px;
+    height: 60px;
+    background-color: #d8373e; /* Nền đỏ */
+    border: 1px solid #ccc;
+    border-radius: 50%; /* Bo tròn nút */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none; /* Xóa gạch chân (link) */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fixed-cart-btn .cart-btn i {
+    font-size: 24px; /* Tăng kích thước icon */
+    color: #fff; /* Màu icon trắng */
+}
+
+.fixed-cart-btn .cart-btn:hover {
+    background-color: #a92c35; /* Đổi màu nền khi hover (nền đỏ đậm) */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.fixed-cart-btn .cart-btn:hover i {
+    color: #fff; /* Đảm bảo màu icon trắng khi hover */
+}

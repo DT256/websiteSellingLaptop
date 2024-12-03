@@ -142,6 +142,7 @@
             <div class="form-group" th:each="imageItem, iterStat : ${product.detail.images}">
                 <label for="imageName">Tên Ảnh:</label>
                 <input type="text" th:field="*{detail.images[__${iterStat.index}__].name}" class="form-control">
+                <div><img th:src="*{detail.images[__${iterStat.index}__].imageUrl}" alt="image laptop"></div>
                 <label for="imageURI">URL Ảnh:</label>
                 <input type="text" th:field="*{detail.images[__${iterStat.index}__].imageUrl}" class="form-control">
             </div>

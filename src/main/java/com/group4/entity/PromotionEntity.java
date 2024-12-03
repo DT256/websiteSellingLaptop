@@ -18,8 +18,6 @@ public class PromotionEntity {
     private Long promotionID;
 
     @Column(name = "discount_amount", nullable = false)
-    @Min(value = 0, message = "Discount amount must be a positive number")
-    @Max(value = 99, message = "Discount amount cannot be greater than 99")
     private int discountAmount;
 
     @Column(name = "remaining_uses", nullable = false)

@@ -18,8 +18,6 @@ public interface IOrderService {
     public List<OrderEntity> getOrdersByUserId(Long userID);
     public OrderEntity getOrderDetails(Long orderID);
     public OrderEntity placeOrder(OrderEntity order);
-    public void confirmCancelOrder(Long orderId);
-    public void rejectCancelOrder(Long orderId);
     public OrderEntity createOrder(List<LineItemEntity>lineItems, CustomerEntity currentUser, AddressEntity address,long total, boolean checkAddress, String phone, String note);
     public int getTotalOrderValue(OrderEntity order);
     public int checkInventoryProduct(List<LineItemEntity> lineItems);

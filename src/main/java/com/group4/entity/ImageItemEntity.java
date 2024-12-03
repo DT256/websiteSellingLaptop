@@ -18,7 +18,7 @@ public class ImageItemEntity {
     @Column(name = "name", columnDefinition = "nvarchar(250)", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url",columnDefinition = "text", nullable = false)
     private String imageUrl;
 
 //    @ManyToOne

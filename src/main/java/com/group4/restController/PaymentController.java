@@ -72,7 +72,7 @@ public class PaymentController {
         String transactionNo = request.getParameter("vnp_TransactionNo");
         String bankCode = request.getParameter("vnp_BankCode");
         String transactionStatus = request.getParameter("vnp_TransactionStatus");
-        int amount = Integer.parseInt(request.getParameter("vnp_Amount"))/100;
+        long amount = Long.parseLong(request.getParameter("vnp_Amount"))/100;
 
         String payDate = request.getParameter("vnp_PayDate");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -81,7 +81,7 @@ public class PaymentController {
         Long orderId = Long.parseLong(request.getParameter("orderid"));
 
         if (status.equals("00")) {
-            paymentService.handlePayBank(transactionNo,bankCode,transactionStatus,localDateTime,amount, orderId);
+            paymentService.handlePayBank(transactionNo,bankCode,transactionStatus,localDateTime,(int)amount, orderId);
             response.getWriter().write(
                     "<script>" +
                             "alert('Đơn hàng đã thanh toán thành công');" +

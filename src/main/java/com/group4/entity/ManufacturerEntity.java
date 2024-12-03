@@ -24,7 +24,7 @@
 	    @Column(name = "address", columnDefinition = "nvarchar(250)")
 	    private String address;
 	
-	    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, orphanRemoval = false)
 		@JsonManagedReference
 	    private List<ProductEntity> products;
 	

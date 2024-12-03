@@ -9,9 +9,7 @@ import java.util.Optional;
 
 public interface ICustomerService {
     public List<CustomerEntity> searchCustomers(String keyword);
-    public void deleteCustomer(Long id);
     public List<CustomerEntity> getAllCustomers();
     public Optional<CustomerEntity> getCustomerById(Long id);
     public void updateActiveStatus(Long userId, boolean status);
-    public void deleteCustomerAccount(Long id);
 }

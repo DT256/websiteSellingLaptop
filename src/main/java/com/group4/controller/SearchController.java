@@ -3,6 +3,7 @@ package com.group4.controller;
 import com.group4.entity.*;
 import com.group4.model.*;
 import com.group4.service.impl.ProductServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +33,9 @@ public class SearchController {
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) String disk,
             @RequestParam(required = false) String category,
-            Model model) {
-
+            Model model,
+            HttpSession session) {
+        session.removeAttribute("appliedPromotion");
         Page<ProductEntity> productEntities = productServiceImpl.searchProducts(
                 searchName, manufacturer, cpu, gpu, operationSystem, minPrice, maxPrice, disk, category, PageRequest.of(page, 12));
 
