@@ -23,6 +23,10 @@ public class LoginController {
         boolean isValidCredentials = userService.validateCredentials(username, password);
         if (isValidCredentials) {
             UserEntity user = userService.findByEmail(username).get();
+            if(!user.isActive()) {
+                model.addAttribute("error", "Bạn chưa xác minh email!");
+                return "login";
+            }
             session.setAttribute("username", username);
             session.setAttribute("fullName", user.getName());
             session.setAttribute("roleName", user.getRoleName());

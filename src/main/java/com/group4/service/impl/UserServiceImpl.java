@@ -34,11 +34,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public boolean validateCredentials(String username, String password) {
-        return userRepository.existsByEmailAndPasswordAndActive(username, password, true);
+        return userRepository.existsByEmailAndPassword(username, password);
     }
 
     @Override
     public UserEntity saveUser(UserEntity user) {
+        user.setActive(true);
         return userRepository.save(user);
     }
 
