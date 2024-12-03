@@ -30,9 +30,9 @@ public class CustomerReviewController {
     public String submitReview(@RequestParam Long productId,
                                @RequestParam int rating,
                                @RequestParam String reviewContent,
+                               @RequestParam Long orderId,
                                HttpSession session) {
         UserEntity user = (UserEntity) session.getAttribute("user");
-
         // Kiểm tra và tạo đối tượng ProductEntity
         ProductEntity product = new ProductEntity();
         product.setProductID(productId);
@@ -47,6 +47,6 @@ public class CustomerReviewController {
         // Lưu vào cơ sở dữ liệu
         customerReviewService.saveReview(review);
 
-        return "redirect:/history"; // Chuyển hướng về lịch sử
+        return "redirect:/purchasedProduct?orderId=" + orderId; // Chuyển hướng về lịch sử
     }
 }

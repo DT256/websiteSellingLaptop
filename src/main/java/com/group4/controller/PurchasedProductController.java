@@ -40,6 +40,7 @@ public class PurchasedProductController {
 
         model.addAttribute("purchasedProducts", purchasedProducts);
         model.addAttribute("hasReviewedMap", hasReviewedMap); // Truyền Map vào Model
+        model.addAttribute("orderId",orderId);
         return "purchasedProduct";
     }
 }
