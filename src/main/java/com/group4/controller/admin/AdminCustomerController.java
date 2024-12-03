@@ -64,7 +64,7 @@ public class AdminCustomerController {
     @GetMapping("/{id}/lock")
     public String lockCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            customerService.updateActiveStatus(id, false); // Khóa tài khoản
+                customerService.updateActiveStatus(id, false); // Khóa tài khoản
             redirectAttributes.addFlashAttribute("successMessage", "Khóa thành công!");
         } catch (Exception e) {
             e.printStackTrace();

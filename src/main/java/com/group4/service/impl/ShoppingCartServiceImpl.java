@@ -26,7 +26,7 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
     @Override
     public ShoppingCartEntity addProductToCart(CustomerEntity customer, ProductEntity product) {
         // Find the shopping cart by user
-        Optional<ShoppingCartEntity> optionalCart = shoppingCartRepository.findByCustomer(customer);
+        Optional<ShoppingCartEntity> optionalCart = shoppingCartRepository.findCartByCustomer(customer);
 
         ShoppingCartEntity shoppingCart;
         if (optionalCart.isPresent()) {
