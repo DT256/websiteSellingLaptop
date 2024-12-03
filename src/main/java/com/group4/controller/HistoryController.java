@@ -61,12 +61,6 @@ public class HistoryController {
             return "redirect:/history";
         }
 
-        // Kiểm tra trạng thái đơn hàng
-        if ("Đã giao".equals(order.getShippingStatus()) || "Đang giao".equals(order.getShippingStatus())) {
-            model.addAttribute("errorMessage", "Hủy đơn hàng không thành công.");
-            return "redirect:/history";
-        }
-
         // Hủy đơn hàng
         historyService.cancelOrder(orderId, accountNumber, accountName, bankName);
 
