@@ -65,7 +65,7 @@ public class ShoppingCartController {
 //    }
 
     @GetMapping("/remove/{productId}")
-    public String removeProductFromCart(@PathVariable Long productId, HttpSession session) {
+    public String removeProductFromCart(@PathVariable Long productId, HttpSession session,RedirectAttributes redirectAttributes) {
         // Lấy thông tin khách hàng từ session
         CustomerEntity currentUser = (CustomerEntity) session.getAttribute("user");
         if (currentUser == null) {
@@ -74,6 +74,7 @@ public class ShoppingCartController {
 
         // Xóa sản phẩm khỏi giỏ hàng
         shoppingCartService.removeProductFromCart(currentUser.getUserID(), productId);
+        redirectAttributes.addFlashAttribute("successMessage", "Sản phẩm đã được xóa khỏi giỏ hàng!");
         return "redirect:/cart";
     }
 
@@ -100,14 +101,14 @@ public class ShoppingCartController {
         redirectAttributes.addFlashAttribute("message", "Đã thêm sản phẩm vào giỏ hàng!");
 
         // Chuyển hướng về trang sản phẩm hoặc giỏ hàng
-        return "redirect:/cart"; // Hoặc "redirect:/products" nếu muốn quay lại danh sách sản phẩm
+        return "redirect:/products"; // Hoặc "redirect:/products" nếu muốn quay lại danh sách sản phẩm
     }
 
     @PostMapping("/apply-coupon")
     public String applyCoupon(@RequestParam String couponCode, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         CustomerEntity currentUser = (CustomerEntity) session.getAttribute("user");
         if (currentUser == null) {
-            return "redirect:/login";
+            return "redirect:cart";
         }
 
         Optional<PromotionEntity> promotionOpt = promotionService.findByPromotionCode(couponCode);

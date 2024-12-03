@@ -63,7 +63,7 @@ public class HistoryController {
 
         // Kiểm tra trạng thái đơn hàng
         if ("Đã giao".equals(order.getShippingStatus()) || "Đang giao".equals(order.getShippingStatus())) {
-            model.addAttribute("errorMessage", "Không thể hủy đơn hàng đã giao hoặc đang giao.");
+            model.addAttribute("errorMessage", "Hủy đơn hàng không thành công.");
             return "redirect:/history";
         }
 

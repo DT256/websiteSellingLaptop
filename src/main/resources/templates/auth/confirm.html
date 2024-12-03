@@ -33,6 +33,10 @@
                             <p class="text-muted sub-header mb-4 mt-3">Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một email kèm theo OTP Code để đặt lại mật khẩu của bạn.</p>
                         </div>
 
+                        <div th:if="${mess}" class="alert alert-danger">
+                            <p th:text="${mess}"></p>
+                        </div>
+
                         <form th:action="@{send-otp-active}" method="post">
 
                             <div class="form-group mb-3">
