@@ -32,13 +32,14 @@ public class AuthController {
     @GetMapping("/logout")
     public String logoutPage(HttpSession session) {
         session.invalidate();
-        return "redirect:/?logout";
+        return "redirect:/home";
     }
 
     @RequestMapping(value = "register")
     public String addUser(Model model) {
-
-        model.addAttribute("user", new UserEntity());
+        UserEntity user = new UserEntity();
+        user.setActive(true);
+        model.addAttribute("user", user);
         return "register";
     }
 
@@ -63,6 +64,7 @@ public class AuthController {
         session.setAttribute("email", user.getEmail());
         session.setAttribute("name", user.getName());
         session.setAttribute("password", user.getPassword());
+
         return "redirect:/otp-check";
     }
 
