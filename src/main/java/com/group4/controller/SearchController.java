@@ -60,6 +60,17 @@ public class SearchController {
         List<CategoryModel> categories = productServiceImpl.getAllCategories();
         model.addAttribute("categories", categories);
 
+        // Add các tham số lọc để giữ lại trên view
+        model.addAttribute("searchName", searchName);
+        model.addAttribute("manufacturer", manufacturer);
+        model.addAttribute("cpu", cpu);
+        model.addAttribute("gpu", gpu);
+        model.addAttribute("operationSystem", operationSystem);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("disk", disk);
+        model.addAttribute("category", category);
+
         return "shop-grid-left-sidebar";
     }
 }
