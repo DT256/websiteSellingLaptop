@@ -46,9 +46,9 @@
             <select name="status" >
                 <option value="">Tất cả</option>
 <!--                <option value="Yêu cầu huỷ" th:selected="${status == 'Yêu cầu huỷ'}">Yêu cầu huỷ</option>-->
-                <option value="Đã huỷ" th:selected="${status == 'Đã huỷ'}">Đã huỷ</option>
-                <option value="Đang giao" th:selected="${status == 'Đang giao'}">Đang giao</option>
-                <option value="Đã giao" th:selected="${status == 'Đã giao'}">Đã giao</option>
+                <option value="CANCELED" th:selected="${status == 'CANCELED'}">Đã huỷ</option>
+                <option value="SPENDING" th:selected="${status == 'SPENDING'}">Đang giao</option>
+                <option value="SHIPPED" th:selected="${status == 'SHIPPED'}">Đã giao</option>
             </select>
             <!-- Nút tìm kiếm -->
             <button type="submit" class="search-btn"
